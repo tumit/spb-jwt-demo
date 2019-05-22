@@ -7,24 +7,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import xyz.tumit.spbjwtdemo.member.model.Member;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(MemberController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class MemberControllerIT {
 
     @Autowired
@@ -48,11 +50,11 @@ public class MemberControllerIT {
         );
 
         // act
-        val requestBuilder = get("/members").accept(MediaType.APPLICATION_JSON);
+        val requestBuilder = get("/members").accept(APPLICATION_JSON);
         MockHttpServletResponse response = mvc.perform(requestBuilder).andReturn().getResponse();
 
         // assert
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getStatus()).isEqualTo(OK.value());
         assertThat(response.getContentAsString()).isEqualTo(json.write(members).getJson());
     }
 }
